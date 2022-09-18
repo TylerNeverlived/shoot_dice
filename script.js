@@ -20,6 +20,7 @@ diceElement.classList.add('hidden');
 const totalScores = [0, 0];
 let currentScore = 0;
 let activePlayer = 0;
+let isPlaying = true;
 
 const swichActivePlayer = function () {
   currentScore = 0;
@@ -31,29 +32,42 @@ const swichActivePlayer = function () {
 };
 //Roll the dice
 btnRoll.addEventListener('click', function () {
-  // 1. Generate a random number
-  const diceNumber = Math.trunc(Math.random() * 6) + 1;
-  console.log(diceNumber);
+  if (isPlaying) {
+    // 1. Generate a random number
+    const diceNumber = Math.trunc(Math.random() * 6) + 1;
 
-  // 2. Display number on the dice
-  diceElement.classList.remove('hidden');
-  diceElement.src = `dice${diceNumber}.png`;
+    // 2. Display number on the dice
+    diceElement.classList.remove('hidden');
+    diceElement.src = `dice${diceNumber}.png`;
 
-  // 3. If the number is 1, swich to the next player, if not - add number to the current score
-  if (diceNumber !== 1) {
-    currentScore += diceNumber;
-    document.getElementById(`current--${activePlayer}`).textContent =
-      currentScore;
-  } else {
-    swichActivePlayer();
+    // 3. If the number is 1, swich to the next player, if not - add number to the current score
+    if (diceNumber !== 1) {
+      currentScore += diceNumber;
+      document.getElementById(`current--${activePlayer}`).textContent =
+        currentScore;
+    } else {
+      swichActivePlayer();
+    }
   }
 });
 
 btnHold.addEventListener('click', function () {
-  // 1. Add current score to active total score
-  totalScores[activePlayer] += currentScore;
-  document.getElementById(`score--${activePlayer}`).textContent =
-    totalScores[activePlayer];
-  // 2. If total score of active plaer >= 100, active player won, if not - swich activ player
-  swichActivePlayer();
+  if (isPlaying) {
+    // 1. Add current score to active total score
+    totalScores[activePlayer] += currentScore;
+    document.getElementById(`score--${activePlayer}`).textContent =
+      totalScores[activePlayer];
+    // 2. If total score of active plaer >= 100, active player won, if not - swich activ player
+    if (totalScores[activePlayer] >= 20) {
+      isPlaying = false;
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add('player--winner');
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.remove('player--active');
+    } else {
+      swichActivePlayer();
+    }
+  }
 });
