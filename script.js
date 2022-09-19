@@ -13,14 +13,27 @@ const player0Element = document.querySelector('.player--0');
 const player1Element = document.querySelector('.player--1');
 
 //Game initial conditions
-score0Element.textContent = 0;
-score1Element.textContent = 0;
-diceElement.classList.add('hidden');
+let totalScores, currentScore, activePlayer, isPlaying;
 
-const totalScores = [0, 0];
-let currentScore = 0;
-let activePlayer = 0;
-let isPlaying = true;
+const initGame = function () {
+  totalScores = [0, 0];
+  currentScore = 0;
+  activePlayer = 0;
+  isPlaying = true;
+
+  score0Element.textContent = 0;
+  score1Element.textContent = 0;
+  current0Element.textContent = 0;
+  current1Element.textContent = 0;
+  player0Element.classList.remove('player--winner');
+  player1Element.classList.remove('player--winner');
+  player0Element.classList.remove('player--active');
+  player1Element.classList.remove('player--active');
+  player0Element.classList.add('player--active');
+  diceElement.classList.add('hidden');
+};
+
+initGame();
 
 const swichActivePlayer = function () {
   currentScore = 0;
@@ -30,6 +43,7 @@ const swichActivePlayer = function () {
   player0Element.classList.toggle('player--active');
   player1Element.classList.toggle('player--active');
 };
+
 //Roll the dice
 btnRoll.addEventListener('click', function () {
   if (isPlaying) {
@@ -58,8 +72,9 @@ btnHold.addEventListener('click', function () {
     document.getElementById(`score--${activePlayer}`).textContent =
       totalScores[activePlayer];
     // 2. If total score of active plaer >= 100, active player won, if not - swich activ player
-    if (totalScores[activePlayer] >= 20) {
+    if (totalScores[activePlayer] >= 100) {
       isPlaying = false;
+      diceElement.classList.add('hidden');
       document
         .querySelector(`.player--${activePlayer}`)
         .classList.add('player--winner');
@@ -71,3 +86,5 @@ btnHold.addEventListener('click', function () {
     }
   }
 });
+
+btnNew.addEventListener('click', initGame);
